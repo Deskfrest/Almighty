@@ -3,6 +3,7 @@ package com.android.almighty.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.almighty.data.model.ResourceModel
+import com.android.almighty.util.TimeUtil
 import java.io.File
 
 class ResourceViewModel : ViewModel() {
@@ -18,8 +19,9 @@ class ResourceViewModel : ViewModel() {
                 val tempFile = list[index]
                 fileList.add(ResourceModel(
                     name = tempFile.name,
-                    path = tempFile.absolutePath,
-                    parentPath = tempFile.parent ?: "",
+                    absolutePath = tempFile.absolutePath,
+                    extension = tempFile.extension,
+                    lastModifiedDate = TimeUtil.stampToDate(stamp = tempFile.lastModified()),
                     isFile = tempFile.isFile)
                 )
             }

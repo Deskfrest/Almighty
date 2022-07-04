@@ -18,6 +18,7 @@ import com.android.almighty.data.model.ResourceModel
 import com.android.almighty.databinding.FragmentResourceBinding
 import com.android.almighty.util.FileUtil
 import com.android.almighty.viewmodel.ResourceViewModel
+import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.fragment_resource.*
 
 private const val ARG_PARAM1 = "param1"
@@ -55,6 +56,10 @@ class ResourceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ImmersionBar.with(this).apply {
+            statusBarColor(R.color.theme_color)
+            navigationBarColor(R.color.theme_color)
+        }
         //onBackPressed的替代方案，用于在Fragment中处理返回键事件
         (activity as FragmentActivity).onBackPressedDispatcher.addCallback(this.viewLifecycleOwner, mBackDispatcher)
         //配置Recyclerview相关属性
@@ -63,8 +68,16 @@ class ResourceFragment : Fragment() {
             adapter = mAdapter
         }
         mAdapter.setOnItemClickListener { adapter, view, position ->
-            pathList.add((adapter.data as MutableList<ResourceModel>)[position].path)
-            viewModel.getResourceList((adapter.data as MutableList<ResourceModel>)[position].path)
+            val resourceModel = (adapter.data as MutableList<ResourceModel>)[position]
+            //判断当前点击的item是否是文件
+            if(resourceModel.isFile){
+                //如果是文件，跳转至对应的组件
+            }else{
+                //如果是文件夹，将该文件夹的路径添加至路径列表中，在返回上一级目录时，通过该路径获取文件列表
+                //如果是文件夹，获取该文件夹下的所有文件，并填充至recyclerview
+                pathList.add(resourceModel.absolutePath)
+                viewModel.getResourceList((adapter.data as MutableList<ResourceModel>)[position].absolutePath)
+            }
         }
         viewModel = ViewModelProvider(this).get(ResourceViewModel::class.java)
         viewModel.resourceList.observe(viewLifecycleOwner, Observer {

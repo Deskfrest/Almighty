@@ -16,8 +16,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         ImmersionBar.with(this).apply {
-            statusBarColor(R.color.purple_200)
-            navigationBarColor(R.color.purple_200)
+            statusBarColor(R.color.theme_color)
+            navigationBarColor(R.color.theme_color)
         }
         navController = findNavController(R.id.nav_host_fragment)
         slider.setupWithNavController(navController)
