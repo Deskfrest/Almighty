@@ -1,5 +1,6 @@
 package com.android.almighty.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,6 +20,9 @@ import com.android.almighty.data.model.ResourceModel
 import com.android.almighty.databinding.FragmentResourceBinding
 import com.android.almighty.util.FileUtil
 import com.android.almighty.viewmodel.ResourceViewModel
+import com.android.imgviewerlib.ImgViewerActivity
+import com.android.imgviewerlib.PARAM_NAME
+import com.android.imgviewerlib.PARAM_PATH
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.fragment_resource.*
 
@@ -73,6 +77,15 @@ class ResourceFragment : Fragment() {
             //判断当前点击的item是否是文件
             if(resourceModel.isFile){
                 //如果是文件，跳转至对应的组件
+                when(resourceModel.extension){
+                    //图片格式
+                    "jpg","JPEG","jpeg","JPG" -> {
+                        val intent = Intent(requireContext(),ImgViewerActivity::class.java)
+                        intent.putExtra(PARAM_PATH,resourceModel.absolutePath)
+                        intent.putExtra(PARAM_NAME,resourceModel.name)
+                        startActivity(intent)
+                    }
+                }
             }else{
                 //如果是文件夹，将该文件夹的路径添加至路径列表中，在返回上一级目录时，通过该路径获取文件列表
                 //如果是文件夹，获取该文件夹下的所有文件，并填充至recyclerview
