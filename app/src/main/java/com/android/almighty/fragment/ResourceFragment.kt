@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.almighty.R
+import com.android.almighty.activity.MainActivity
 import com.android.almighty.adapter.ResourceListAdapter
 import com.android.almighty.data.model.ResourceModel
 import com.android.almighty.databinding.FragmentResourceBinding
@@ -32,7 +33,7 @@ class ResourceFragment : Fragment() {
     //根目录
     private var rootPath = ""
     //每次进入文件夹或返回上一级目录时，会在该List中进行相应的增减，用于在返回上一级目录时，读取正确的绝对路径
-    private val pathList = arrayListOf<String>()
+    private var pathList = arrayListOf<String>()
 
 
     private var param1: String? = null
@@ -88,6 +89,10 @@ class ResourceFragment : Fragment() {
             rootPath = FileUtil.getPath(this)
             pathList.add(rootPath)
             viewModel.getResourceList(rootPath)
+        }
+        //设置toolbar的点击事件
+        toolbar.setNavigationOnClickListener {
+            (requireActivity() as MainActivity).openDrawerLayout()
         }
     }
 

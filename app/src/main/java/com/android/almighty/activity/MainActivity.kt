@@ -22,4 +22,12 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.nav_host_fragment)
         slider.setupWithNavController(navController)
     }
+
+    fun openDrawerLayout(){
+        slider.drawerLayout?.let { drawerLayout->
+            if(!drawerLayout.isOpen){
+                drawerLayout.open()
+            }
+        }
+    }
 }
