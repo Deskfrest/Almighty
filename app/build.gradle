@@ -76,4 +76,7 @@ dependencies {
 
     //feature/img_viewer
     implementation project(":imgViewerLib")
+
+    //feature/pdf_viewer
+    implementation project(":pdfViewerLib")
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.pdfviewerlib">
+
+    <application>
+        <activity
+            android:name=".PdfCatalogueActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PdfThumbnailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PdfViewerActivity"
+            android:exported="false" />
+    </application>
+
+</manifest>
