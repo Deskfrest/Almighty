@@ -18,3 +18,4 @@ rootProject.name = "Almighty"
 include ':app'
 include ':imgViewerLib'
 include ':pdfViewerLib'
+include ':mdViewerLib'

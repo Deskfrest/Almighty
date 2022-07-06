@@ -23,6 +23,7 @@ import com.android.almighty.viewmodel.ResourceViewModel
 import com.android.imgviewerlib.ImgViewerActivity
 import com.android.imgviewerlib.PARAM_NAME
 import com.android.imgviewerlib.PARAM_PATH
+import com.android.mdviewerlib.MdViewerActivity
 import com.android.pdfviewerlib.PdfViewerActivity
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.fragment_resource.*
@@ -89,6 +90,13 @@ class ResourceFragment : Fragment() {
                     //PDF格式
                     "pdf" -> {
                         val intent = Intent(requireContext(),PdfViewerActivity::class.java)
+                        intent.putExtra(com.android.pdfviewerlib.PARAM_PATH,resourceModel.absolutePath)
+                        intent.putExtra(com.android.pdfviewerlib.PARAM_NAME,resourceModel.name)
+                        startActivity(intent)
+                    }
+                    //MarkDown格式
+                    "md" -> {
+                        val intent = Intent(requireContext(),MdViewerActivity::class.java)
                         intent.putExtra(com.android.pdfviewerlib.PARAM_PATH,resourceModel.absolutePath)
                         intent.putExtra(com.android.pdfviewerlib.PARAM_NAME,resourceModel.name)
                         startActivity(intent)

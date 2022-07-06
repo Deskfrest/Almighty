@@ -79,4 +79,7 @@ dependencies {
 
     //feature/pdf_viewer
     implementation project(":pdfViewerLib")
+
+    //feature/md_viewer
+    implementation project(":mdViewerLib")
 }
