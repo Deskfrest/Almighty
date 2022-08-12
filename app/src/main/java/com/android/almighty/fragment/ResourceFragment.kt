@@ -25,6 +25,7 @@ import com.android.imgviewerlib.PARAM_NAME
 import com.android.imgviewerlib.PARAM_PATH
 import com.android.mdviewerlib.MdViewerActivity
 import com.android.pdfviewerlib.PdfViewerActivity
+import com.android.videoviewerlib.view.VideoPlayerActivity
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.fragment_resource.*
 
@@ -33,11 +34,13 @@ private const val ARG_PARAM2 = "param2"
 
 //文件列表
 class ResourceFragment : Fragment() {
-    private lateinit var binding : FragmentResourceBinding
-    private lateinit var viewModel : ResourceViewModel
+    private lateinit var binding: FragmentResourceBinding
+    private lateinit var viewModel: ResourceViewModel
     private val mAdapter by lazy { ResourceListAdapter() }
+
     //根目录
     private var rootPath = ""
+
     //每次进入文件夹或返回上一级目录时，会在该List中进行相应的增减，用于在返回上一级目录时，读取正确的绝对路径
     private var pathList = arrayListOf<String>()
 
@@ -68,7 +71,10 @@ class ResourceFragment : Fragment() {
             navigationBarColor(R.color.theme_color)
         }
         //onBackPressed的替代方案，用于在Fragment中处理返回键事件
-        (activity as FragmentActivity).onBackPressedDispatcher.addCallback(this.viewLifecycleOwner, mBackDispatcher)
+        (activity as FragmentActivity).onBackPressedDispatcher.addCallback(
+            this.viewLifecycleOwner,
+            mBackDispatcher
+        )
         //配置Recyclerview相关属性
         with(recycler_view) {
             layoutManager = LinearLayoutManager(context)
@@ -77,32 +83,44 @@ class ResourceFragment : Fragment() {
         mAdapter.setOnItemClickListener { adapter, view, position ->
             val resourceModel = (adapter.data as MutableList<ResourceModel>)[position]
             //判断当前点击的item是否是文件
-            if(resourceModel.isFile){
+            if (resourceModel.isFile) {
                 //如果是文件，跳转至对应的组件
-                when(resourceModel.extension){
+                when (resourceModel.extension) {
                     //图片格式
-                    "jpg","JPEG","jpeg","JPG" -> {
-                        val intent = Intent(requireContext(),ImgViewerActivity::class.java)
-                        intent.putExtra(PARAM_PATH,resourceModel.absolutePath)
-                        intent.putExtra(PARAM_NAME,resourceModel.name)
+                    "jpg", "JPEG", "jpeg", "JPG" -> {
+                        val intent = Intent(requireContext(), ImgViewerActivity::class.java)
+                        intent.putExtra(PARAM_PATH, resourceModel.absolutePath)
+                        intent.putExtra(PARAM_NAME, resourceModel.name)
                         startActivity(intent)
                     }
                     //PDF格式
                     "pdf" -> {
-                        val intent = Intent(requireContext(),PdfViewerActivity::class.java)
-                        intent.putExtra(com.android.pdfviewerlib.PARAM_PATH,resourceModel.absolutePath)
-                        intent.putExtra(com.android.pdfviewerlib.PARAM_NAME,resourceModel.name)
+                        val intent = Intent(requireContext(), PdfViewerActivity::class.java)
+                        intent.putExtra(
+                            com.android.pdfviewerlib.PARAM_PATH,
+                            resourceModel.absolutePath
+                        )
+                        intent.putExtra(com.android.pdfviewerlib.PARAM_NAME, resourceModel.name)
                         startActivity(intent)
                     }
                     //MarkDown格式
                     "md" -> {
-                        val intent = Intent(requireContext(),MdViewerActivity::class.java)
-                        intent.putExtra(com.android.pdfviewerlib.PARAM_PATH,resourceModel.absolutePath)
-                        intent.putExtra(com.android.pdfviewerlib.PARAM_NAME,resourceModel.name)
+                        val intent = Intent(requireContext(), MdViewerActivity::class.java)
+                        intent.putExtra(
+                            com.android.pdfviewerlib.PARAM_PATH,
+                            resourceModel.absolutePath
+                        )
+                        intent.putExtra(com.android.pdfviewerlib.PARAM_NAME, resourceModel.name)
                         startActivity(intent)
                     }
+                    //mp4视频格式
+                    "mp4" -> {
+                        Intent(requireContext(), VideoPlayerActivity::class.java).apply {
+                            startActivity(this)
+                        }
+                    }
                 }
-            }else{
+            } else {
                 //如果是文件夹，将该文件夹的路径添加至路径列表中，在返回上一级目录时，通过该路径获取文件列表
                 //如果是文件夹，获取该文件夹下的所有文件，并填充至recyclerview
                 pathList.add(resourceModel.absolutePath)
@@ -129,11 +147,11 @@ class ResourceFragment : Fragment() {
     private val mBackDispatcher = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             //如果路径列表中还有2个或两个以上的路径，则代表当前不是根目录，可以进行返回上一级目录的操作
-            if(pathList.size > 1){
+            if (pathList.size > 1) {
                 //先将当前路径移除，再读取路径列表的最后一个路径的文件列表
                 pathList.removeAt(pathList.size - 1)
-                viewModel.getResourceList(pathList[pathList.size -1])
-            }else{
+                viewModel.getResourceList(pathList[pathList.size - 1])
+            } else {
                 Toast.makeText(requireContext(), "已经是最顶层了", Toast.LENGTH_SHORT).show()
             }
         }

@@ -82,4 +82,8 @@ dependencies {
 
     //feature/md_viewer
     implementation project(":mdViewerLib")
+
+    //feature/video_viewer
+    implementation project(":videoViewerLib")
+
 }

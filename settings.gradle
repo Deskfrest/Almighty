@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        jcenter()
         maven { url 'https://jitpack.io' }
         mavenCentral()
         gradlePluginPortal()
@@ -19,3 +20,4 @@ include ':app'
 include ':imgViewerLib'
 include ':pdfViewerLib'
 include ':mdViewerLib'
+include ':videoViewerLib'

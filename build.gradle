@@ -13,9 +13,16 @@ buildscript {
 plugins {
     id 'com.android.application' version '7.1.3' apply false
     id 'com.android.library' version '7.1.3' apply false
-    id 'org.jetbrains.kotlin.android' version '1.5.30' apply false
+    id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    compileSdkVersion = 32       // depending on your sdk version
+    buildToolsVersion = "32.0.0" // depending on your build tools version
+
+    targetSdkVersion = 32        // depending on your sdk version
 }
