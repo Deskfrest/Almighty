@@ -2,6 +2,7 @@ package com.android.almighty.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +26,7 @@ import com.android.imgviewerlib.PARAM_NAME
 import com.android.imgviewerlib.PARAM_PATH
 import com.android.mdviewerlib.MdViewerActivity
 import com.android.pdfviewerlib.PdfViewerActivity
-import com.android.videoviewerlib.view.VideoPlayerActivity
+import com.android.videoviewerlib.VideoPlayerActivity
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.fragment_resource.*
 
@@ -34,6 +35,8 @@ private const val ARG_PARAM2 = "param2"
 
 //文件列表
 class ResourceFragment : Fragment() {
+    val TAG: String = "ResourceFragment"
+
     private lateinit var binding: FragmentResourceBinding
     private lateinit var viewModel: ResourceViewModel
     private val mAdapter by lazy { ResourceListAdapter() }
@@ -116,6 +119,11 @@ class ResourceFragment : Fragment() {
                     //mp4视频格式
                     "mp4" -> {
                         Intent(requireContext(), VideoPlayerActivity::class.java).apply {
+                            putExtra(
+                                com.android.videoviewerlib.PARAM_PATH,
+                                resourceModel.absolutePath
+                            )
+                            putExtra(com.android.videoviewerlib.PARAM_NAME, resourceModel.name)
                             startActivity(this)
                         }
                     }

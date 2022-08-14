@@ -1,6 +1,7 @@
 package com.android.videoviewerlib.view
 
 import android.content.Context
+import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
 import android.view.Surface
@@ -15,29 +16,29 @@ import java.nio.file.Path
 import java.security.KeyStore
 import java.util.jar.Attributes
 
-class VideoPlayerIJK(context: Context) : FrameLayout(context) {
+class VideoPlayerIJK(context: Context, attributeSet: AttributeSet) :
+    FrameLayout(context, attributeSet) {
     private val TAG: String = "VideoPlayerIJK"
 
     var mMediaPlayer: IMediaPlayer? = null
     lateinit var surfaceView: SurfaceView
     private var listener: VideoPlayerListene? = null
-    lateinit var mVideoPath: String
+    var mVideoPath: String = ""
 
-    init {
-        initVideoView()
-    }
-
-    private fun initVideoView() {
-
-    }
 
     fun setVideoPath(path: String) {
-        mVideoPath = path
-        if (path.isEmpty())
-        //第一次进入，创建新的SurfaceView
+//        IjkMediaPlayer.loadLibrariesOnce(null);
+//        IjkMediaPlayer.native_profileBegin("libijkplayer.so");
+        if (mVideoPath.isEmpty()) {
+            //第一次进入，创建新的SurfaceView
+            Log.i(TAG, "第一次进入")
+            mVideoPath = path
             createSurfaceView()
-        else
+        } else{
+            Log.i(TAG, "直接加载")
             load()
+        }
+
     }
 
     private fun createSurfaceView() {
@@ -52,16 +53,17 @@ class VideoPlayerIJK(context: Context) : FrameLayout(context) {
     inner class VideoSurfaceCallback : SurfaceHolder.Callback {
 
         override fun surfaceCreated(p0: SurfaceHolder) {
-            TODO("Not yet implemented")
+
         }
 
         override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
             //surfaceview创建成功后，加载视频
+            Log.i(TAG, "surfaceChanged: 创建成功")
             load()
         }
 
         override fun surfaceDestroyed(p0: SurfaceHolder) {
-            TODO("Not yet implemented")
+
         }
 
     }
@@ -83,6 +85,7 @@ class VideoPlayerIJK(context: Context) : FrameLayout(context) {
             it.release()
         }
         val ijkMediaPlayer: IjkMediaPlayer = IjkMediaPlayer()
+        mMediaPlayer = ijkMediaPlayer
         if (listener != null) {
             mMediaPlayer?.let {
                 with(it) {

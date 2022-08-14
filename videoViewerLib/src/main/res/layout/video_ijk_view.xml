@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <com.android.videoviewerlib.view.VideoPlayerIJK
-        android:id="@+id/video_ijk_view"
+        android:id="@+id/video_ijk"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
