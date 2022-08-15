@@ -12,37 +12,45 @@ import com.android.videoviewerlib.VideoPlayerListene
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import java.io.IOException
-import java.nio.file.Path
-import java.security.KeyStore
-import java.util.jar.Attributes
 
+/**
+ * 自定义view，用以实现ijkPlayer和SurfaceView的创建
+ */
 class VideoPlayerIJK(context: Context, attributeSet: AttributeSet) :
     FrameLayout(context, attributeSet) {
     private val TAG: String = "VideoPlayerIJK"
 
     var mMediaPlayer: IMediaPlayer? = null
-    lateinit var surfaceView: SurfaceView
+    lateinit var surfaceView: SurfaceRenderView
     private var listener: VideoPlayerListene? = null
     var mVideoPath: String = ""
 
+    lateinit var mRenderView: IRenderView
+
+    init {
+        //初始化ijkPlayer库
+        IjkMediaPlayer.loadLibrariesOnce(null)
+        IjkMediaPlayer.native_profileBegin("libijkplayer.so")
+    }
+
 
     fun setVideoPath(path: String) {
-//        IjkMediaPlayer.loadLibrariesOnce(null);
-//        IjkMediaPlayer.native_profileBegin("libijkplayer.so");
         if (mVideoPath.isEmpty()) {
             //第一次进入，创建新的SurfaceView
             Log.i(TAG, "第一次进入")
             mVideoPath = path
             createSurfaceView()
-        } else{
+        } else {
             Log.i(TAG, "直接加载")
             load()
         }
 
     }
 
+    //创建surfaceview
     private fun createSurfaceView() {
-        surfaceView = SurfaceView(context)
+        surfaceView = SurfaceRenderView(context)
+        mRenderView = surfaceView
         surfaceView.holder.addCallback(VideoSurfaceCallback())
         val layoutParams =
             LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.CENTER)
@@ -75,6 +83,8 @@ class VideoPlayerIJK(context: Context, attributeSet: AttributeSet) :
         } catch (e: IOException) {
             Log.e(TAG, "load: " + e.stackTrace)
         }
+        mMediaPlayer?.setDisplay(surfaceView.holder)
+        mMediaPlayer?.prepareAsync()
     }
 
     //创建ijk播放器
@@ -102,7 +112,6 @@ class VideoPlayerIJK(context: Context, attributeSet: AttributeSet) :
     //提供给外部调用的接口方法
     fun setListener(videoPlayerListene: VideoPlayerListene) {
         listener = videoPlayerListene
-        mMediaPlayer?.setOnPreparedListener(listener)
     }
 
 
@@ -110,7 +119,7 @@ class VideoPlayerIJK(context: Context, attributeSet: AttributeSet) :
 
     //开始播放
     fun start() {
-        mMediaPlayer?.start()
+        mMediaPlayer?.start() ?: Log.i(TAG, "mMediaPlayer为空")
     }
 
     //释放资源
